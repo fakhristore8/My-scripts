@@ -1,62 +1,56 @@
---[[
-    🚀 FUCK FLA$H — 99 Nights In The Forest 🚀
-    Converted from: nightsintheforest.lua
-]]
-
-if not game:IsLoaded() then return end
-
-local Services = setmetatable({}, {
-    __index = function(self, key)
-        return game:GetService(key)
-    end
-})
-
-local Players = Services.Players
+-- [[ 🚀 FUCK FLA$H — 99 NIGHTS IN THE FOREST ]]
+local Branding = "FUCK FLA$H"
+local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
-local ReplicatedStorage = Services.ReplicatedStorage
+local Character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
 
--- Branding & Notification
-local function Notify(title, text)
-    Services.StarterGui:SetCore("SendNotification", {
-        Title = "FUCK FLA$H | " .. title,
-        Text = text,
+-- Fungsi Notifikasi
+local function notify(msg)
+    game:GetService("StarterGui"):SetCore("SendNotification", {
+        Title = Branding,
+        Text = msg,
         Duration = 5
     })
 end
 
-Notify("Status", "Script FUCK FLA$H sedang dimuat...")
+notify("Script Active! Mengaktifkan fitur...")
 
--- Main Script Logic (Struktur Dasar)
-local FFlash = {
-    Settings = {},
-    Modules = {}
-}
-
--- Contoh fungsi yang biasanya ada di script tersebut (Auto Farm / ESP)
-function FFlash:Init()
-    print("FUCK FLA$H Core Initialized")
-    
-    -- Ganti tag chat menjadi FUCK FLA$H
-    task.spawn(function()
-        local TextChatService = Services.TextChatService
-        if TextChatService.ChatVersion == Enum.ChatVersion.TextChatService then
-            TextChatService.OnIncomingMessage = function(data)
-                local props = Instance.new("TextChatMessageProperties")
-                if data.TextSource then
-                    local plr = Players:GetPlayerByUserId(data.TextSource.UserId)
-                    if plr == LocalPlayer then
-                        props.PrefixText = "<font color='#FF0000'>[FUCK FLA$H]</font> " .. data.PrefixText
-                    end
-                end
-                return props
-            end
+-- FITUR 1: Speed & Jump (Contoh Fitur Nyata)
+task.spawn(function()
+    while task.wait() do
+        if Character:FindFirstChild("Humanoid") then
+            Character.Humanoid.WalkSpeed = 25 -- Lebih cepat dari normal
+            Character.Humanoid.JumpPower = 60
         end
-    end)
+    end
+end)
+
+-- FITUR 2: Full Bright (Menghilangkan Gelap di Hutan)
+local Lighting = game:GetService("Lighting")
+Lighting.Brightness = 2
+Lighting.ClockTime = 14
+Lighting.FogEnd = 100000
+
+-- FITUR 3: ESP Sederhana (Melihat Player/Item)
+for _, v in pairs(Players:GetPlayers()) do
+    if v ~= LocalPlayer and v.Character then
+        local highlight = Instance.new("Highlight")
+        highlight.Parent = v.Character
+        highlight.FillColor = Color3.fromRGB(255, 0, 0)
+        highlight.Name = "FF_ESP"
+    end
 end
 
--- Menjalankan Init
-FFlash:Init()
+-- Chat Tag Otomatis
+local TextChatService = game:GetService("TextChatService")
+if TextChatService.ChatVersion == Enum.ChatVersion.TextChatService then
+    TextChatService.OnIncomingMessage = function(data)
+        local props = Instance.new("TextChatMessageProperties")
+        if data.TextSource and data.TextSource.UserId == LocalPlayer.UserId then
+            props.PrefixText = "<font color='#FF0000'>[FUCK FLA$H]</font> " .. data.PrefixText
+        end
+        return props
+    end
+end
 
--- Load Main UI (Biasanya menggunakan library eksternal)
--- Jika Anda memiliki UI Library sendiri, Anda bisa memanggilnya di sini.
-Notify("Berhasil", "FUCK FLA$H siap digunakan!")
+notify("Semua fitur aktif! [Speed, Bright, ESP]")
